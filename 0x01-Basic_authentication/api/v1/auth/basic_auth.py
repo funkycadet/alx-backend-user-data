@@ -35,7 +35,9 @@ class BasicAuth(Auth):
         elif type(base64_authorization_header) != str:
             return None
         try:
-            if base64.b64encode(base64.b64decode(base64_authorization_header)) == base64_authorization_header:
+            if base64.b64encode(
+                base64.b64decode(base64_authorization_header)
+            ) == base64_authorization_header:
                 return base64_authorization_header
             else:
                 content_bytes = base64_authorization_header.encode('utf-8')
