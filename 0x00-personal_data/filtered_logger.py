@@ -10,6 +10,9 @@ def filter_datum(
 ) -> str:
     """ filter_datum function """
     for field in fields:
-        pattern = f"{field}=[^;]+"
-        message = re.sub(pattern, f"{field}={redaction}", message)
+        # pattern = f"{field}=[^;]+"
+        # message = re.sub(pattern, f"{field}={redaction}", message)
+        message = re.sub(
+            field+'=.*?'+separator, field+'='+redaction+separator, message
+        )
     return message
