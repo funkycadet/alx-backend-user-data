@@ -41,9 +41,11 @@ class RedactingFormatter(logging.Formatter):
         """
         redact the message of LogRecord instance
         """
-        record.message = filter_datum(
-            self.fields, self.REDACTION, record.message, self.SEPARATOR)
-        return super().format(record)
+        message = super(RedactingFormatter, self).format(record)
+        redacted_data = filter_datum(
+            self.fields, self.REDACTION, message, self.SEPARATOR
+        )
+        return redacted_data
 
 
 def get_logger() -> logging.Logger:
@@ -77,6 +79,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     )
     return conn
 
+
 def main():
     """ main method
     """
@@ -90,6 +93,7 @@ def main():
         logger.info(message.strip())
     cursor.close()
     db.close()
+
 
 if __name__ == "__main__":
     main()
