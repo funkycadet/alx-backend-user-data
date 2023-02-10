@@ -2,7 +2,7 @@
 """ Session Authentication module
 """
 from .auth import Auth
-import uuid
+from uuid import uuid4
 
 
 class SessionAuth(Auth):
@@ -21,10 +21,8 @@ class SessionAuth(Auth):
         """
         if user_id is None:
             return None
-        elif type(user_id) != str:
+        if type(user_id) != str:
             return None
-        else:
-            session_id = uuid.uuid4()
-            print(session_id)
-            self.user_id_by_session_id[session_id] = user_id
-            return session_id
+        session_id = uuid4()
+        self.user_id_by_session_id[str(session_id)] = user_id
+        return str(session_id)
