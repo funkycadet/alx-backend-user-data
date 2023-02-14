@@ -11,7 +11,7 @@ import os
 def auth_session():
     """ POST /api/v1/auth_session/login
     Handles user login
-    Return:
+    Returns:
         - dictionary representation of a user
     """
     email = request.form.get('email')
@@ -32,3 +32,16 @@ def auth_session():
             user_json.set_cookie(session_name, session_id)
             return user_json
     return jsonify({"error": "wrong password"}), 401
+
+
+@app_views.route('/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+def logout_session():
+    """ DELETE /api/v1/auth_session/logout
+    Handles user logout
+    Returns:
+        - empty JSON dictionary with status code 200
+    """
+    from api.v1.app import auth
+    if auth.destroy_session(request):
+        return jsonify({}), 200
+    abort(404)
