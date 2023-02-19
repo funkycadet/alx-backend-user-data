@@ -54,3 +54,18 @@ class DB:
                 if getattr(user, k) == l:
                     return user
         raise NoResultFound
+
+    def update_user(self, user_id: int, **kwargs) -> User:
+        """ update_user method
+        Updates a user record stored in db
+        """
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
+            raise ValueError()
+        for k, l in kwargs.items():
+            if hasattr(user, k):
+                setattr(user, k, l)
+            else:
+                raise ValueError
+        self._session.commit()
