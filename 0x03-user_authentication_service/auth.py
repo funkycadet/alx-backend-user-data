@@ -4,7 +4,7 @@
 import bcrypt
 
 
-def _hash_password(password):
+def _hash_password(password: None) -> None:
     """ _hash_password method
     Returns given password strings as bytes
     """
