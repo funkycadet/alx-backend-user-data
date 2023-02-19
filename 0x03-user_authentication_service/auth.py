@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-""" Auth module
+"""
+Auth module
 """
 from db import DB
 from sqlalchemy.orm.exc import NoResultFound
+from typing import Union
 from user import User
 from uuid import uuid4
 
@@ -10,7 +12,7 @@ import bcrypt
 
 
 def _hash_password(password: str) -> bytes:
-    """ _hash_password method
+    """
     Returns given password strings as bytes
     """
     password_bytes = password.encode('utf-8')
@@ -20,21 +22,22 @@ def _hash_password(password: str) -> bytes:
 
 
 def _generate_uuid() -> str:
-    """ _generate_uuid method
+    """
     Generates UUID
     """
     return str(uuid4())
 
 
 class Auth:
-    """Auth class to interact with the authentication database.
+    """
+    Auth class to interact with the authentication database.
     """
 
     def __init__(self):
         self._db = DB()
 
     def register_user(self, email: str, password: str) -> User:
-        """ register_user method
+        """
         Registers a new user and saves to db
         """
         try:
@@ -46,7 +49,7 @@ class Auth:
         raise ValueError(f'User {email} already exists')
 
     def valid_login(self, email: str, password: str) -> bool:
-        """ valid_login method
+        """
         Checks the validity of the given email and password
         """
         try:
@@ -56,3 +59,15 @@ class Auth:
         user_password = user.hashed_password
         password_check = password.encode('utf-8')
         return bcrypt.checkpw(password_check, user_password)
+
+    def create_session(self, email: str) -> Union[None, str]:
+        """
+        Creates a new session for user
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+        except NoResultFound:
+            return None
+        session_id = _generate_uuid()
+        self._db.update_user(user.id, session_id=session_id)
+        return session_id
